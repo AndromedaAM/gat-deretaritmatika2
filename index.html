@@ -21,6 +21,7 @@
     .ok{background:rgba(46,204,113,0.12);border:1px solid rgba(46,204,113,0.2)}
     .bad{background:rgba(255,123,123,0.12);border:1px solid rgba(255,123,123,0.2)}
     .meta{font-size:13px;color:#444;margin-top:6px}
+    .analysis{font-size:13px;color:#222;margin-top:8px;background:#f1f1f1;padding:8px;border-radius:6px}
     .controls{margin-top:12px}
     .btn-restart{background:#27ae60;color:#fff;padding:8px 12px;border-radius:6px;border:0;cursor:pointer}
     .small-note{font-size:13px;color:#666}
@@ -41,6 +42,7 @@
         <div class="controls">
           <button id="nextButton" onclick="manualNext()">Next</button>
         </div>
+        <div class="small-note">Nomor soal dipisah agar tidak tercampur dengan teks soal.</div>
       </div>
 
       <div id="result" class="hidden"></div>
@@ -48,33 +50,33 @@
   </div>
 
   <script>
-    // quizData: 25 soal, opts array, ans = index 0..4
+    // quizData with analysis for each soal (analysis provided by user)
     const quizData = [
-      { num:1, text:'13-10-6-8-9-5-2-..?', opts:['0','3','4','-1','5'], ans:2 },
-      { num:2, text:'31-18-47-65-113-178-291-..?', opts:['378','469','459','392','410'], ans:1 },
-      { num:3, text:'51-24-27-72-72-36-38-..?', opts:['40','76','54','108','72'], ans:3 },
-      { num:4, text:'5-6-9-14-21-22-25-..?', opts:['28','29','30','27','26'], ans:2 },
-      { num:5, text:'7-4-9-10-6-3-6-..?', opts:['5','7','4','8','6'], ans:1 },
-      { num:6, text:'33-11-22-15-15-5-10-..?', opts:['7','8','9','12','6'], ans:2 },
-      { num:7, text:'6-11-7-10-8-13-9-..?', opts:['10','11','12','13','9'], ans:2 },
-      { num:8, text:'15-61-30-15-30-120-60-..?', opts:['30','90','120','240','75'], ans:2 },
-      { num:9, text:'10-8-16-12-6-12-24-..?', opts:['18','20','16','12','28'], ans:2 },
-      { num:10, text:'6-12-21-23-18-36-63-..?', opts:['64','65','66','71','60'], ans:1 },
-      { num:11, text:'22-18-81-79-97-93-39-..?', opts:['35','41','45','33','29'], ans:0 },
-      { num:12, text:'2-6-15-31-56-92-141-..?', opts:['200','205','210','196','220'], ans:1 },
-      { num:13, text:'37-41-14-12-24-28-82-..?', opts:['26','46','90','34','18'], ans:0 },
-      { num:14, text:'11-13-31-34-43-45-54-..?', opts:['56','57','58','60','51'], ans:1 },
-      { num:15, text:'18-11-21-23-36-52-81-..?', opts:['119','121','133','110','100'], ans:2 },
-      { num:16, text:'6-7-5-9-5-6-4-..?', opts:['6','7','8','5','4'], ans:2 },
-      { num:17, text:'11-4-8-6-8-3-7-..?', opts:['5','6','4','8','3'], ans:0 },
-      { num:18, text:'4-13-32-72-135-228-357-..?', opts:['512','568','600','490','642'], ans:1 },
-      { num:19, text:'4-9-34-25-136-48-355-..?', opts:['106','120','240','180','95'], ans:0 },
-      { num:20, text:'13-17-71-71-17-20-24-..?', opts:['68','44','28','20','71'], ans:0 },
-      { num:21, text:'11-8-8-15-15-13-11-..?', opts:['8','10','12','9','15'], ans:0 },
-      { num:22, text:'3-10-29-66-127-219-346-..?', opts:['511','472','500','540','465'], ans:0 },
-      { num:23, text:'44-36-30-26-24-17-11-..?', opts:['7','5','3','9','11'], ans:0 },
-      { num:24, text:'15-16-19-16-11-12-14-..?', opts:['12','13','10','15','9'], ans:0 },
-      { num:25, text:'5-1-2-8-8-5-6-..?', opts:['10','12','18','6','8'], ans:2 }
+      { num:1, text:'13-10-6-8-9-5-2-..?', opts:['0','3','4','-1','5'], ans:2, analysis:'selisih berurutan membentuk pola berulang (-3,-4,+2,+1,-4,-3,+2...)' },
+      { num:2, text:'31-18-47-65-113-178-291-..?', opts:['378','469','459','392','410'], ans:1, analysis:'mulai dari suku ke-4, tiap suku = jumlah dua suku sebelumnya; lanjut: 291+178' },
+      { num:3, text:'51-24-27-72-72-36-38-..?', opts:['40','76','54','108','72'], ans:3, analysis:'pola pada suku genap x3 lalu /2 bergantian; suku genap berikut diperkirakan 108' },
+      { num:4, text:'5-6-9-14-21-22-25-..?', opts:['28','29','30','27','26'], ans:2, analysis:'selisih = 1,3,5,7,1,3,... sehingga selisih selanjutnya 5' },
+      { num:5, text:'7-4-9-10-6-3-6-..?', opts:['5','7','4','8','6'], ans:1, analysis:'pasangan berubah pola: -3, +1, -3, +1,... jadi berikut +1' },
+      { num:6, text:'33-11-22-15-15-5-10-..?', opts:['7','8','9','12','6'], ans:2, analysis:'suku ganjil menurun (33,22,15,10 → -11,-7,-5) suku genap bergeser +4,-10,+4 → next +4' },
+      { num:7, text:'6-11-7-10-8-13-9-..?', opts:['10','11','12','13','9'], ans:2, analysis:'suku ganjil 6,7,8,9 naik +1; suku genap pola -1,+3,-1 → next = +3 jadi 12' },
+      { num:8, text:'15-61-30-15-30-120-60-..?', opts:['30','90','120','240','75'], ans:2, analysis:'setelah pola /2,*2,*4,/2 repetitif, suku berikut = *2 → 120' },
+      { num:9, text:'10-8-16-12-6-12-24-..?', opts:['18','20','16','12','28'], ans:2, analysis:'ada pola pengurangan bertahap -2,-4,-6,-8; setelah 24, kurangi 8 → 16' },
+      { num:10, text:'6-12-21-23-18-36-63-..?', opts:['64','65','66','71','60'], ans:1, analysis:'pola bergantian *2 dan penjumlahan; prediksi paling konsisten: 65' },
+      { num:11, text:'22-18-81-79-97-93-39-..?', opts:['35','41','45','33','29'], ans:0, analysis:'polanya berpasangan (-4,+63,-2,+18,-4,-54); tebakan paling konsisten 35' },
+      { num:12, text:'2-6-15-31-56-92-141-..?', opts:['200','205','210','196','220'], ans:1, analysis:'selisih bertambah: 4,9,16,25,36,49 (kuadrat); next selisih 64 → 205' },
+      { num:13, text:'37-41-14-12-24-28-82-..?', opts:['26','46','90','34','18'], ans:0, analysis:'pola bergantian suku ganjil/genap; prediksi paling konsisten = 26' },
+      { num:14, text:'11-13-31-34-43-45-54-..?', opts:['56','57','58','60','51'], ans:1, analysis:'pola +2,+18,+3,+9,+2,+9,... kemungkinan berikut +3 → 57' },
+      { num:15, text:'18-11-21-23-36-52-81-..?', opts:['119','121','133','110','100'], ans:2, analysis:'pola meningkat cepat, tebak kombinasi penjumlahan sebelumnya → 133' },
+      { num:16, text:'6-7-5-9-5-6-4-..?', opts:['6','7','8','5','4'], ans:2, analysis:'pola bergantian +1,-2,+4,-4,+1,-2,... jadi berikut +4 → 8' },
+      { num:17, text:'11-4-8-6-8-3-7-..?', opts:['5','6','4','8','3'], ans:0, analysis:'suku genap 4,6,3; genap selanjutnya +2 → 5' },
+      { num:18, text:'4-13-32-72-135-228-357-..?', opts:['512','568','600','490','642'], ans:1, analysis:'selisih:9,19,40,63,93,129 -> pola pertumbuhan; tebakan 568' },
+      { num:19, text:'4-9-34-25-136-48-355-..?', opts:['106','120','240','180','95'], ans:0, analysis:'operasi bergantian (× then ±); tebakan konsisten 106' },
+      { num:20, text:'13-17-71-71-17-20-24-..?', opts:['68','44','28','20','71'], ans:0, analysis:'pola rotasi nilai, tebakan logis 68' },
+      { num:21, text:'11-8-8-15-15-13-11-..?', opts:['8','10','12','9','15'], ans:0, analysis:'pola berpasangan mengulangi 11,8,8,15,15,13,11,... selanjutnya 8' },
+      { num:22, text:'3-10-29-66-127-219-346-..?', opts:['511','472','500','540','465'], ans:0, analysis:'selisih:7,19,37,61,92,127; next tebakan 511' },
+      { num:23, text:'44-36-30-26-24-17-11-..?', opts:['7','5','3','9','11'], ans:0, analysis:'selisih -8,-6,-4,-2,-7,-6 -> pola -8,-6,-4,-2 then -8,-6 -> next -4 => 7' },
+      { num:24, text:'15-16-19-16-11-12-14-..?', opts:['12','13','10','15','9'], ans:0, analysis:'pola bergantian +1,+3,-3,-5,+1,+2 -> tebakan 12' },
+      { num:25, text:'5-1-2-8-8-5-6-..?', opts:['10','12','18','6','8'], ans:2, analysis:'pola berulang kecil; tebakan paling masuk akal = 18' }
     ];
 
     let idx = 0;
@@ -141,6 +143,7 @@
         out += `<div class="meta">Pertanyaan: ${q.text}</div>`;
         out += `<div class="meta">Jawaban kamu: ${ua}</div>`;
         out += `<div class="meta">Kunci: ${ca}</div>`;
+        out += `<div class="analysis"><strong>Pembahasan:</strong> ${q.analysis}</div>`;
         out += `</div>`;
       });
 
@@ -151,7 +154,6 @@
 
     function restart(){ idx=0; userAns.length=0; elResult.classList.add('hidden'); document.getElementById('quizArea').classList.remove('hidden'); renderQuestion(); }
 
-    // start
     renderQuestion();
   </script>
 </body>
